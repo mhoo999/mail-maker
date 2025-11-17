@@ -9,9 +9,10 @@ interface BlockEditorProps {
   onUpdate: (block: Block) => void;
   onDelete: () => void;
   isDragging?: boolean;
+  dragHandleProps?: any;
 }
 
-export function BlockEditor({ block, onUpdate, onDelete, isDragging }: BlockEditorProps) {
+export function BlockEditor({ block, onUpdate, onDelete, isDragging, dragHandleProps }: BlockEditorProps) {
   const renderEditor = () => {
     switch (block.type) {
       case "header":
@@ -186,7 +187,9 @@ export function BlockEditor({ block, onUpdate, onDelete, isDragging }: BlockEdit
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <GripVertical className="w-5 h-5 text-toss-gray-400 cursor-grab" />
+          <div {...dragHandleProps} className="cursor-grab active:cursor-grabbing">
+            <GripVertical className="w-5 h-5 text-toss-gray-400" />
+          </div>
           <span className="text-sm font-medium text-toss-gray-700">
             {getBlockLabel(block.type)}
           </span>

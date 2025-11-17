@@ -54,8 +54,9 @@ function blockToHTML(block: Block): string {
               </${block.level}>\n`;
 
     case "text":
-      return `              <p style="margin: 16px 0; font-size: 16px; color: #4e5968; line-height: 1.6;">
-                ${escapeHtml(block.content || "본문")}
+      const textContent = escapeHtml(block.content || "본문").replace(/\n/g, '<br>');
+      return `              <p style="margin: 16px 0; font-size: 16px; color: #4e5968; line-height: 1.6; white-space: pre-line;">
+                ${textContent}
               </p>\n`;
 
     case "button":

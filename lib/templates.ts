@@ -5,7 +5,7 @@ export interface TemplateDefinition {
   id: string;
   name: string;
   description: string;
-  type: "notice" | "promotion" | "newsletter" | "megazone";
+  type: "notice" | "promotion" | "newsletter" | "custom";
   blocks: Omit<Block, "id">[];
 }
 
@@ -42,7 +42,7 @@ export const TEMPLATES: TemplateDefinition[] = [
       {
         type: "footer",
         companyName: "회사명",
-        copyright: "© 2024 All rights reserved",
+        copyright: "© 2025 All rights reserved",
       },
     ],
   },
@@ -82,7 +82,7 @@ export const TEMPLATES: TemplateDefinition[] = [
       {
         type: "footer",
         companyName: "회사명",
-        copyright: "© 2024 All rights reserved",
+        copyright: "© 2025 All rights reserved",
       },
     ],
   },
@@ -135,38 +135,7 @@ export const TEMPLATES: TemplateDefinition[] = [
       {
         type: "footer",
         companyName: "회사명",
-        copyright: "© 2024 All rights reserved",
-      },
-    ],
-  },
-  {
-    id: "megazone-edu",
-    name: "메가존 교육사업부",
-    description: "메가존 교육사업부 공지 템플릿",
-    type: "megazone",
-    blocks: [
-      {
-        type: "header",
-        logoUrl: "",
-        badgeText: "공지",
-      },
-      {
-        type: "title",
-        text: "제목을 입력하세요",
-        level: "h1",
-      },
-      {
-        type: "text",
-        content: "안녕하세요.\n\n메일 내용을 입력하세요.",
-      },
-      {
-        type: "divider",
-      },
-      {
-        type: "footer",
-        companyName: "메가존 교육사업부 드림",
-        address: "문의사항이 있으신 경우 교육사업부로 연락주시기 바랍니다.\n(edu@mz.co.kr / 02-2108-9145)\n\n감사합니다.",
-        copyright: "© 2025 Megazone Edu_Service. All Rights Reserved.",
+        copyright: "© 2025 All rights reserved",
       },
     ],
   },

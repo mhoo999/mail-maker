@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import { Block, BlockType } from "@/types/block";
 import { generateId } from "@/lib/utils";
 import { SortableBlock } from "./SortableBlock";
 import { EmailPreview } from "./EmailPreview";
-import { Plus, Eye, Code, Copy, Check, FileText } from "lucide-react";
+import { Plus, Eye, Code, Copy, Check, FileText, Save, Trash, Home } from "lucide-react";
 import { generateEmailHTML } from "@/lib/html-generator";
 import { TEMPLATES, createBlocksFromTemplate } from "@/lib/templates";
+import { getSavedTemplates, saveTemplate, deleteTemplate as deleteStoredTemplate, SavedTemplate } from "@/lib/storage";
 
 const BLOCK_TYPES: { type: BlockType; label: string }[] = [
   { type: "header", label: "헤더" },
@@ -27,6 +28,14 @@ export function MailBuilder() {
   const [showPreview, setShowPreview] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showTemplates, setShowTemplates] = useState(true);
+  const [savedTemplates, setSavedTemplates] = useState<SavedTemplate[]>([]);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [templateDescription, setTemplateDescription] = useState("");
+
+  useEffect(() => {
+    setSavedTemplates(getSavedTemplates());
+  }, []);
 
   const createBlock = (type: BlockType): Block => {
     const baseBlock = { id: generateId(), type };
@@ -99,6 +108,40 @@ export function MailBuilder() {
     }
   };
 
+  const loadSavedTemplate = (template: SavedTemplate) => {
+    setBlocks(template.blocks);
+    setShowTemplates(false);
+  };
+
+  const handleSaveTemplate = () => {
+    if (!templateName.trim()) {
+      alert("템플릿 이름을 입력해주세요.");
+      return;
+    }
+
+    try {
+      saveTemplate(templateName, templateDescription, blocks);
+      setSavedTemplates(getSavedTemplates());
+      setShowSaveDialog(false);
+      setTemplateName("");
+      setTemplateDescription("");
+      alert("템플릿이 저장되었습니다!");
+    } catch (error) {
+      alert("템플릿 저장에 실패했습니다.");
+    }
+  };
+
+  const handleDeleteTemplate = (id: string) => {
+    if (confirm("이 템플릿을 삭제하시겠습니까?")) {
+      try {
+        deleteStoredTemplate(id);
+        setSavedTemplates(getSavedTemplates());
+      } catch (error) {
+        alert("템플릿 삭제에 실패했습니다.");
+      }
+    }
+  };
+
   const startFromScratch = () => {
     setBlocks([]);
     setShowTemplates(false);
@@ -113,19 +156,51 @@ export function MailBuilder() {
             <p className="text-lg text-toss-gray-600">HTML 이메일을 쉽게 만들어보세요</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4 mb-6">
-            {TEMPLATES.map((template) => (
-              <button
-                key={template.id}
-                onClick={() => loadTemplate(template.id)}
-                className="bg-white p-6 rounded-xl border-2 border-toss-gray-200 hover:border-toss-blue hover:shadow-lg transition-all text-left"
-              >
-                <FileText className="w-8 h-8 text-toss-blue mb-3" />
-                <h3 className="text-lg font-bold text-toss-gray-900 mb-2">{template.name}</h3>
-                <p className="text-sm text-toss-gray-600">{template.description}</p>
-              </button>
-            ))}
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-toss-gray-900 mb-4">기본 템플릿</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {TEMPLATES.map((template) => (
+                <button
+                  key={template.id}
+                  onClick={() => loadTemplate(template.id)}
+                  className="bg-white p-6 rounded-xl border-2 border-toss-gray-200 hover:border-toss-blue hover:shadow-lg transition-all text-left"
+                >
+                  <FileText className="w-8 h-8 text-toss-blue mb-3" />
+                  <h3 className="text-lg font-bold text-toss-gray-900 mb-2">{template.name}</h3>
+                  <p className="text-sm text-toss-gray-600">{template.description}</p>
+                </button>
+              ))}
+            </div>
           </div>
+
+          {savedTemplates.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-toss-gray-900 mb-4">저장된 템플릿</h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                {savedTemplates.map((template) => (
+                  <div
+                    key={template.id}
+                    className="bg-white p-6 rounded-xl border-2 border-toss-gray-200 hover:border-toss-blue hover:shadow-lg transition-all relative group"
+                  >
+                    <button
+                      onClick={() => loadSavedTemplate(template)}
+                      className="w-full text-left"
+                    >
+                      <FileText className="w-8 h-8 text-toss-blue mb-3" />
+                      <h3 className="text-lg font-bold text-toss-gray-900 mb-2">{template.name}</h3>
+                      <p className="text-sm text-toss-gray-600">{template.description || "사용자 정의 템플릿"}</p>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTemplate(template.id)}
+                      className="absolute top-4 right-4 p-2 text-toss-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash className="w-5 h-5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="text-center">
             <button
@@ -145,6 +220,13 @@ export function MailBuilder() {
       {/* 왼쪽 패널: 블록 추가 및 편집 */}
       <div className="w-96 bg-white border-r border-toss-gray-300 overflow-y-auto">
         <div className="p-6">
+          <button
+            onClick={() => setShowTemplates(true)}
+            className="flex items-center gap-2 mb-4 px-3 py-2 text-toss-gray-600 hover:text-toss-blue hover:bg-toss-gray-100 rounded-lg transition-colors text-sm"
+          >
+            <Home className="w-4 h-4" />
+            처음으로
+          </button>
           <h2 className="text-xl font-bold text-toss-gray-900 mb-4">블록 추가</h2>
           <div className="grid grid-cols-2 gap-2 mb-8">
             {BLOCK_TYPES.map(({ type, label }) => (
@@ -187,6 +269,14 @@ export function MailBuilder() {
           <h2 className="text-lg font-bold text-toss-gray-900">미리보기</h2>
           <div className="flex gap-2">
             <button
+              onClick={() => setShowSaveDialog(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-toss-gray-100 hover:bg-toss-gray-200 text-toss-gray-700 rounded-lg transition-colors text-sm font-medium disabled:opacity-50"
+              disabled={blocks.length === 0}
+            >
+              <Save className="w-4 h-4" />
+              템플릿 저장
+            </button>
+            <button
               onClick={() => setShowPreview(!showPreview)}
               className="flex items-center gap-2 px-4 py-2 bg-toss-gray-100 hover:bg-toss-gray-200 text-toss-gray-700 rounded-lg transition-colors text-sm font-medium"
             >
@@ -216,6 +306,60 @@ export function MailBuilder() {
           )}
         </div>
       </div>
+
+      {/* 템플릿 저장 다이얼로그 */}
+      {showSaveDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-toss-gray-900 mb-4">템플릿 저장</h3>
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                  템플릿 이름 *
+                </label>
+                <input
+                  type="text"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  placeholder="예: 메가존 교육사업부"
+                  className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                  설명 (선택)
+                </label>
+                <textarea
+                  value={templateDescription}
+                  onChange={(e) => setTemplateDescription(e.target.value)}
+                  placeholder="템플릿에 대한 간단한 설명을 입력하세요"
+                  rows={3}
+                  className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  setShowSaveDialog(false);
+                  setTemplateName("");
+                  setTemplateDescription("");
+                }}
+                className="px-4 py-2 text-toss-gray-700 hover:bg-toss-gray-100 rounded-lg transition-colors"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleSaveTemplate}
+                className="px-4 py-2 bg-toss-blue hover:bg-toss-blue-dark text-white rounded-lg transition-colors"
+              >
+                저장
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

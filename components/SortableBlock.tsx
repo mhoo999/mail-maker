@@ -22,8 +22,14 @@ export function SortableBlock({ block, onUpdate, onDelete }: SortableBlockProps)
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <BlockEditor block={block} onUpdate={onUpdate} onDelete={onDelete} isDragging={isDragging} />
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <BlockEditor
+        block={block}
+        onUpdate={onUpdate}
+        onDelete={onDelete}
+        isDragging={isDragging}
+        dragHandleProps={listeners}
+      />
     </div>
   );
 }

@@ -63,6 +63,7 @@ export function EmailBlock({ block }: EmailBlockProps) {
             fontSize: "16px",
             color: "#4e5968",
             lineHeight: "1.6",
+            whiteSpace: "pre-line",
           }}
         >
           {block.content || "본문을 입력하세요"}
