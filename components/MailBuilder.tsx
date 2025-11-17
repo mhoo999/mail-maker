@@ -224,24 +224,24 @@ export function MailBuilder() {
             </button>
           </div>
 
-          <div className="mt-16 pt-8 pb-8 -mx-6 px-6 bg-black">
-            <div className="text-center text-sm text-white">
-              <p className="mb-3 font-semibold">Developer Contact</p>
-              <div className="flex items-center justify-center gap-4">
+          <div className="mt-20 pt-6 border-t border-toss-gray-200">
+            <div className="text-center">
+              <p className="text-xs text-toss-gray-500 mb-3">Developer</p>
+              <div className="flex items-center justify-center gap-3 text-sm text-toss-gray-600">
                 <a
                   href="mailto:famehoon@mz.co.kr"
                   className="hover:text-toss-blue transition-colors"
                 >
                   famehoon@mz.co.kr
                 </a>
-                <span className="text-gray-500">|</span>
+                <span className="text-toss-gray-300">·</span>
                 <a
                   href="https://github.com/mhoo999"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-toss-blue transition-colors"
                 >
-                  github.com/mhoo999
+                  GitHub
                 </a>
               </div>
             </div>
