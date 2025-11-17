@@ -95,6 +95,68 @@ function blockToHTML(block: Block): string {
     case "divider":
       return `              <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e8eb;">\n`;
 
+    case "spacer":
+      return `              <div style="height: ${block.height}px;"></div>\n`;
+
+    case "list":
+      const listTag = block.listType === "bullet" ? "ul" : "ol";
+      const listItems = block.items
+        .map((item) => `                  <li style="margin-bottom: 8px;">${escapeHtml(item)}</li>`)
+        .join("\n");
+      return `              <${listTag} style="margin: 16px 0; padding-left: ${block.listType === "bullet" ? "20px" : "24px"}; font-size: 15px; color: #4e5968; line-height: 1.8;">
+${listItems}
+              </${listTag}>\n`;
+
+    case "badge":
+      const badgeColors = {
+        red: { bg: "#d32f2f", color: "#ffffff" },
+        orange: { bg: "#ff9800", color: "#ffffff" },
+        blue: { bg: "#3182f6", color: "#ffffff" },
+        green: { bg: "#4caf50", color: "#ffffff" },
+      };
+      const badgeColor = badgeColors[block.variant];
+      return `              <div style="margin: 16px 0;">
+                <div style="display: inline-block; background-color: ${badgeColor.bg}; color: ${badgeColor.color}; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;">
+                  ${escapeHtml(block.text)}
+                </div>
+              </div>\n`;
+
+    case "stats":
+      const statsHTML = block.stats
+        .map(
+          (stat) => `                <td style="padding: 4px; width: ${100 / block.stats.length}%;">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f9fafb; border-radius: 12px; padding: 24px 20px; text-align: center;">
+                    <tr>
+                      <td>
+                        <div style="font-size: 13px; color: #6b7684; margin-bottom: 8px; font-weight: 500;">${escapeHtml(stat.label)}</div>
+                        <div style="font-size: 28px; font-weight: 700; color: #191f28; line-height: 1.2;">${escapeHtml(stat.value)}</div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>`
+        )
+        .join("\n");
+      return `              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0;">
+                <tr>
+${statsHTML}
+                </tr>
+              </table>\n`;
+
+    case "infoTable":
+      const infoTableHTML = block.rows
+        .map(
+          (row, index) => `                <tr>
+                  <td style="padding: 24px; border-bottom: ${index < block.rows.length - 1 ? "1px solid #e5e8eb" : "none"};">
+                    <div style="font-size: 14px; color: #6b7684; margin-bottom: 6px;">${escapeHtml(row.label)}</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #191f28; line-height: 1.5; white-space: pre-line;">${escapeHtml(row.value).replace(/\n/g, '<br>')}</div>
+                  </td>
+                </tr>`
+        )
+        .join("\n");
+      return `              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; background-color: #ffffff; border: 1px solid #e5e8eb; border-radius: 12px; overflow: hidden;">
+${infoTableHTML}
+              </table>\n`;
+
     case "footer":
       let footerHTML = `              <div style="margin-top: 48px; padding: 24px; background-color: #f9fafb; text-align: center; font-size: 12px; color: #6b7684; line-height: 1.6; border-radius: 4px;">\n`;
       if (block.companyName) {

@@ -156,6 +156,120 @@ export function EmailBlock({ block }: EmailBlockProps) {
         />
       );
 
+    case "spacer":
+      return <div style={{ height: `${block.height}px` }} />;
+
+    case "list":
+      const ListTag = block.listType === "bullet" ? "ul" : "ol";
+      return (
+        <ListTag
+          style={{
+            margin: "16px 0",
+            paddingLeft: block.listType === "bullet" ? "20px" : "24px",
+            fontSize: "15px",
+            color: "#4e5968",
+            lineHeight: "1.8",
+          }}
+        >
+          {block.items.map((item, index) => (
+            <li key={index} style={{ marginBottom: "8px" }}>
+              {item}
+            </li>
+          ))}
+        </ListTag>
+      );
+
+    case "badge":
+      const badgeColors = {
+        red: { bg: "#d32f2f", color: "#ffffff" },
+        orange: { bg: "#ff9800", color: "#ffffff" },
+        blue: { bg: "#3182f6", color: "#ffffff" },
+        green: { bg: "#4caf50", color: "#ffffff" },
+      };
+      const badgeStyle = badgeColors[block.variant];
+      return (
+        <div style={{ margin: "16px 0" }}>
+          <div
+            style={{
+              display: "inline-block",
+              backgroundColor: badgeStyle.bg,
+              color: badgeStyle.color,
+              padding: "6px 12px",
+              borderRadius: "6px",
+              fontSize: "13px",
+              fontWeight: "600",
+            }}
+          >
+            {block.text}
+          </div>
+        </div>
+      );
+
+    case "stats":
+      return (
+        <table width="100%" cellPadding="0" cellSpacing="0" border={0} style={{ margin: "24px 0" }}>
+          <tbody>
+            <tr>
+              {block.stats.map((stat, index) => (
+                <td key={index} style={{ padding: "4px", width: `${100 / block.stats.length}%` }}>
+                  <table
+                    width="100%"
+                    cellPadding="0"
+                    cellSpacing="0"
+                    border={0}
+                    style={{
+                      backgroundColor: "#f9fafb",
+                      borderRadius: "12px",
+                      padding: "24px 20px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div style={{ fontSize: "13px", color: "#6b7684", marginBottom: "8px", fontWeight: "500" }}>
+                            {stat.label}
+                          </div>
+                          <div style={{ fontSize: "28px", fontWeight: "700", color: "#191f28", lineHeight: "1.2" }}>
+                            {stat.value}
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      );
+
+    case "infoTable":
+      return (
+        <table
+          width="100%"
+          cellPadding="0"
+          cellSpacing="0"
+          border={0}
+          style={{ margin: "24px 0", backgroundColor: "#ffffff", border: "1px solid #e5e8eb", borderRadius: "12px", overflow: "hidden" }}
+        >
+          <tbody>
+            {block.rows.map((row, index) => (
+              <tr key={index}>
+                <td style={{ padding: "24px", borderBottom: index < block.rows.length - 1 ? "1px solid #e5e8eb" : "none" }}>
+                  <div>
+                    <div style={{ fontSize: "14px", color: "#6b7684", marginBottom: "6px" }}>{row.label}</div>
+                    <div style={{ fontSize: "16px", fontWeight: "600", color: "#191f28", lineHeight: "1.5", whiteSpace: "pre-line" }}>
+                      {row.value}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+
     case "footer":
       return (
         <div

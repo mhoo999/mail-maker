@@ -146,6 +146,172 @@ export function BlockEditor({ block, onUpdate, onDelete, isDragging, dragHandleP
           </div>
         );
 
+      case "spacer":
+        return (
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-toss-gray-700">
+              간격 높이 (px)
+            </label>
+            <input
+              type="number"
+              min="10"
+              max="100"
+              value={block.height}
+              onChange={(e) => onUpdate({ ...block, height: parseInt(e.target.value) || 20 })}
+              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+            />
+          </div>
+        );
+
+      case "list":
+        return (
+          <div className="space-y-3">
+            <select
+              value={block.listType}
+              onChange={(e) => onUpdate({ ...block, listType: e.target.value as "bullet" | "number" })}
+              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+            >
+              <option value="bullet">불릿 (•)</option>
+              <option value="number">숫자 (1,2,3)</option>
+            </select>
+            {block.items.map((item, index) => (
+              <div key={index} className="flex gap-2">
+                <input
+                  type="text"
+                  value={item}
+                  onChange={(e) => {
+                    const newItems = [...block.items];
+                    newItems[index] = e.target.value;
+                    onUpdate({ ...block, items: newItems });
+                  }}
+                  className="flex-1 px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                />
+                <button
+                  onClick={() => {
+                    const newItems = block.items.filter((_, i) => i !== index);
+                    onUpdate({ ...block, items: newItems });
+                  }}
+                  className="px-3 py-2 text-red-500 hover:bg-red-50 rounded-lg"
+                >
+                  삭제
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={() => onUpdate({ ...block, items: [...block.items, "새 항목"] })}
+              className="w-full px-3 py-2 border-2 border-dashed border-toss-gray-300 hover:border-toss-blue hover:text-toss-blue rounded-lg transition-colors text-sm"
+            >
+              + 항목 추가
+            </button>
+          </div>
+        );
+
+      case "badge":
+        return (
+          <div className="space-y-3">
+            <input
+              type="text"
+              placeholder="배지 텍스트"
+              value={block.text}
+              onChange={(e) => onUpdate({ ...block, text: e.target.value })}
+              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+            />
+            <select
+              value={block.variant}
+              onChange={(e) => onUpdate({ ...block, variant: e.target.value as any })}
+              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+            >
+              <option value="red">빨강 (긴급)</option>
+              <option value="orange">주황 (경고)</option>
+              <option value="blue">파랑 (정보)</option>
+              <option value="green">초록 (완료)</option>
+            </select>
+          </div>
+        );
+
+      case "stats":
+        return (
+          <div className="space-y-3">
+            {block.stats.map((stat, index) => (
+              <div key={index} className="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  placeholder="라벨"
+                  value={stat.label}
+                  onChange={(e) => {
+                    const newStats = [...block.stats];
+                    newStats[index] = { ...stat, label: e.target.value };
+                    onUpdate({ ...block, stats: newStats });
+                  }}
+                  className="px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                />
+                <input
+                  type="text"
+                  placeholder="값"
+                  value={stat.value}
+                  onChange={(e) => {
+                    const newStats = [...block.stats];
+                    newStats[index] = { ...stat, value: e.target.value };
+                    onUpdate({ ...block, stats: newStats });
+                  }}
+                  className="px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                />
+              </div>
+            ))}
+          </div>
+        );
+
+      case "infoTable":
+        return (
+          <div className="space-y-3">
+            {block.rows.map((row, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex gap-2 items-center">
+                  <div className="flex-1 space-y-2">
+                    <input
+                      type="text"
+                      placeholder="항목명"
+                      value={row.label}
+                      onChange={(e) => {
+                        const newRows = [...block.rows];
+                        newRows[index] = { ...row, label: e.target.value };
+                        onUpdate({ ...block, rows: newRows });
+                      }}
+                      className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                    />
+                    <textarea
+                      placeholder="내용"
+                      value={row.value}
+                      onChange={(e) => {
+                        const newRows = [...block.rows];
+                        newRows[index] = { ...row, value: e.target.value };
+                        onUpdate({ ...block, rows: newRows });
+                      }}
+                      rows={2}
+                      className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      const newRows = block.rows.filter((_, i) => i !== index);
+                      onUpdate({ ...block, rows: newRows });
+                    }}
+                    className="px-3 py-2 text-red-500 hover:bg-red-50 rounded-lg"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
+            ))}
+            <button
+              onClick={() => onUpdate({ ...block, rows: [...block.rows, { label: "항목", value: "내용" }] })}
+              className="w-full px-3 py-2 border-2 border-dashed border-toss-gray-300 hover:border-toss-blue hover:text-toss-blue rounded-lg transition-colors text-sm"
+            >
+              + 행 추가
+            </button>
+          </div>
+        );
+
       case "footer":
         return (
           <div className="space-y-3">
@@ -209,13 +375,17 @@ export function BlockEditor({ block, onUpdate, onDelete, isDragging, dragHandleP
 function getBlockLabel(type: Block["type"]): string {
   const labels: Record<Block["type"], string> = {
     header: "헤더",
+    badge: "배지",
     title: "제목",
     text: "본문",
+    list: "리스트",
     button: "버튼",
     image: "이미지",
     highlight: "강조 박스",
+    infoTable: "정보 테이블",
     stats: "통계 카드",
     divider: "구분선",
+    spacer: "간격",
     footer: "푸터",
   };
   return labels[type];

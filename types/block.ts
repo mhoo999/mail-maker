@@ -2,11 +2,15 @@ export type BlockType =
   | "header"
   | "title"
   | "text"
+  | "list"
   | "highlight"
   | "stats"
+  | "infoTable"
+  | "badge"
   | "button"
   | "image"
   | "divider"
+  | "spacer"
   | "footer";
 
 export interface BaseBlock {
@@ -30,8 +34,12 @@ export interface TitleBlock extends BaseBlock {
 export interface TextBlock extends BaseBlock {
   type: "text";
   content: string;
-  isList?: boolean;
-  listItems?: string[];
+}
+
+export interface ListBlock extends BaseBlock {
+  type: "list";
+  items: string[];
+  listType: "bullet" | "number";
 }
 
 export interface HighlightBlock extends BaseBlock {
@@ -49,6 +57,22 @@ export interface StatItem {
 export interface StatsBlock extends BaseBlock {
   type: "stats";
   stats: StatItem[];
+}
+
+export interface InfoTableRow {
+  label: string;
+  value: string;
+}
+
+export interface InfoTableBlock extends BaseBlock {
+  type: "infoTable";
+  rows: InfoTableRow[];
+}
+
+export interface BadgeBlock extends BaseBlock {
+  type: "badge";
+  text: string;
+  variant: "red" | "orange" | "blue" | "green";
 }
 
 export interface ButtonBlock extends BaseBlock {
@@ -69,6 +93,11 @@ export interface DividerBlock extends BaseBlock {
   type: "divider";
 }
 
+export interface SpacerBlock extends BaseBlock {
+  type: "spacer";
+  height: number; // in pixels
+}
+
 export interface FooterBlock extends BaseBlock {
   type: "footer";
   companyName?: string;
@@ -81,11 +110,15 @@ export type Block =
   | HeaderBlock
   | TitleBlock
   | TextBlock
+  | ListBlock
   | HighlightBlock
   | StatsBlock
+  | InfoTableBlock
+  | BadgeBlock
   | ButtonBlock
   | ImageBlock
   | DividerBlock
+  | SpacerBlock
   | FooterBlock;
 
 export interface Template {

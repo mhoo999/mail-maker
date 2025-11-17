@@ -14,12 +14,17 @@ import { getSavedTemplates, saveTemplate, deleteTemplate as deleteStoredTemplate
 
 const BLOCK_TYPES: { type: BlockType; label: string }[] = [
   { type: "header", label: "헤더" },
+  { type: "badge", label: "배지" },
   { type: "title", label: "제목" },
   { type: "text", label: "본문" },
+  { type: "list", label: "리스트" },
+  { type: "highlight", label: "강조 박스" },
+  { type: "infoTable", label: "정보 테이블" },
+  { type: "stats", label: "통계 카드" },
   { type: "button", label: "버튼" },
   { type: "image", label: "이미지" },
-  { type: "highlight", label: "강조 박스" },
   { type: "divider", label: "구분선" },
+  { type: "spacer", label: "간격" },
   { type: "footer", label: "푸터" },
 ];
 
@@ -47,18 +52,26 @@ export function MailBuilder() {
         return { ...baseBlock, type: "title", text: "", level: "h1" };
       case "text":
         return { ...baseBlock, type: "text", content: "" };
+      case "list":
+        return { ...baseBlock, type: "list", items: ["항목 1", "항목 2"], listType: "bullet" };
+      case "badge":
+        return { ...baseBlock, type: "badge", text: "배지", variant: "blue" };
       case "button":
         return { ...baseBlock, type: "button", text: "", url: "" };
       case "image":
         return { ...baseBlock, type: "image", url: "", alt: "" };
       case "highlight":
         return { ...baseBlock, type: "highlight", variant: "info", content: "" };
+      case "infoTable":
+        return { ...baseBlock, type: "infoTable", rows: [{ label: "항목", value: "내용" }] };
+      case "stats":
+        return { ...baseBlock, type: "stats", stats: [{ label: "전체", value: "0" }, { label: "완료", value: "0" }, { label: "남음", value: "0" }] };
       case "divider":
         return { ...baseBlock, type: "divider" };
+      case "spacer":
+        return { ...baseBlock, type: "spacer", height: 20 };
       case "footer":
         return { ...baseBlock, type: "footer", companyName: "", copyright: "" };
-      case "stats":
-        return { ...baseBlock, type: "stats", stats: [] };
       default:
         return baseBlock as Block;
     }
