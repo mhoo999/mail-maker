@@ -223,6 +223,29 @@ export function MailBuilder() {
               빈 페이지에서 시작하기
             </button>
           </div>
+
+          <div className="mt-16 pt-8 pb-8 -mx-6 px-6 bg-black">
+            <div className="text-center text-sm text-white">
+              <p className="mb-3 font-semibold">Developer Contact</p>
+              <div className="flex items-center justify-center gap-4">
+                <a
+                  href="mailto:famehoon@mz.co.kr"
+                  className="hover:text-toss-blue transition-colors"
+                >
+                  famehoon@mz.co.kr
+                </a>
+                <span className="text-gray-500">|</span>
+                <a
+                  href="https://github.com/mhoo999"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-toss-blue transition-colors"
+                >
+                  github.com/mhoo999
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -233,13 +256,6 @@ export function MailBuilder() {
       {/* 왼쪽 패널: 블록 추가 및 편집 */}
       <div className="w-96 bg-white border-r border-toss-gray-300 overflow-y-auto">
         <div className="p-6">
-          <button
-            onClick={() => setShowTemplates(true)}
-            className="flex items-center gap-2 mb-4 px-3 py-2 text-toss-gray-600 hover:text-toss-blue hover:bg-toss-gray-100 rounded-lg transition-colors text-sm"
-          >
-            <Home className="w-4 h-4" />
-            처음으로
-          </button>
           <h2 className="text-xl font-bold text-toss-gray-900 mb-4">블록 추가</h2>
           <div className="grid grid-cols-2 gap-2 mb-8">
             {BLOCK_TYPES.map(({ type, label }) => (
@@ -279,7 +295,19 @@ export function MailBuilder() {
       {/* 오른쪽 패널: 미리보기 */}
       <div className="flex-1 overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-toss-gray-300 px-6 py-4 flex items-center justify-between z-10">
-          <h2 className="text-lg font-bold text-toss-gray-900">미리보기</h2>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                setBlocks([]);
+                setShowTemplates(true);
+              }}
+              className="p-2 text-toss-gray-600 hover:text-toss-blue hover:bg-toss-gray-100 rounded-lg transition-colors"
+              title="처음으로"
+            >
+              <Home className="w-5 h-5" />
+            </button>
+            <h2 className="text-lg font-bold text-toss-gray-900">미리보기</h2>
+          </div>
           <div className="flex gap-2">
             <button
               onClick={() => setShowSaveDialog(true)}
