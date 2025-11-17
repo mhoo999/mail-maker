@@ -6,7 +6,7 @@ export interface TemplateDefinition {
   name: string;
   description: string;
   type: "notice" | "promotion" | "newsletter" | "custom";
-  blocks: Omit<Block, "id">[];
+  blocks: any[];
 }
 
 export const TEMPLATES: TemplateDefinition[] = [
