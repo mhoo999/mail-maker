@@ -52,7 +52,7 @@ export function TiptapEditor({
       
       // 내용이 실제로 다를 때만 업데이트
       if (normalizedCurrent !== normalizedContent) {
-        editor.commands.setContent(content || '<p></p>', false);
+        editor.commands.setContent(content || '<p></p>', { emitUpdate: false });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
