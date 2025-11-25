@@ -40,9 +40,12 @@ function blockToHTML(block: Block): string {
               </div>\n`;
       }
       if (block.badgeText) {
+        // TipTap HTML을 이메일 호환 형식으로 변환
+        const badgeContent = convertTipTapToEmailHTML(block.badgeText);
+        // 배지 박스 스타일 (텍스트 스타일은 TipTap HTML에서 가져옴)
         headerHTML += `              <div style="text-align: center; margin-bottom: 24px;">
-                <span style="display: inline-block; padding: 4px 12px; background-color: #e8f3ff; color: #3182f6; font-size: 12px; font-weight: 600; border-radius: 12px;">
-                  ${block.badgeText}
+                <span style="display: inline-block; padding: 4px 12px; background-color: #e8f3ff; color: #3182f6; font-size: 12px; font-weight: 600; border-radius: 12px; line-height: 1.4;">
+                  ${badgeContent}
                 </span>
               </div>\n`;
       }

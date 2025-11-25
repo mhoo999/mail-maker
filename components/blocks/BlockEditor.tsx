@@ -19,20 +19,28 @@ export function BlockEditor({ block, onUpdate, onDelete, isDragging, dragHandleP
       case "header":
         return (
           <div className="space-y-3">
-            <input
-              type="text"
-              placeholder="로고 URL"
-              value={block.logoUrl || ""}
-              onChange={(e) => onUpdate({ ...block, logoUrl: e.target.value })}
-              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
-            />
-            <input
-              type="text"
-              placeholder="배지 텍스트"
-              value={block.badgeText || ""}
-              onChange={(e) => onUpdate({ ...block, badgeText: e.target.value })}
-              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
-            />
+            <div>
+              <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                로고 URL
+              </label>
+              <input
+                type="text"
+                placeholder="로고 URL"
+                value={block.logoUrl || ""}
+                onChange={(e) => onUpdate({ ...block, logoUrl: e.target.value })}
+                className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                배지 텍스트
+              </label>
+              <TiptapEditor
+                content={block.badgeText || ""}
+                onChange={(content) => onUpdate({ ...block, badgeText: content })}
+                placeholder="배지 텍스트를 입력하세요..."
+              />
+            </div>
           </div>
         );
 

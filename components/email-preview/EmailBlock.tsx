@@ -31,9 +31,10 @@ export function EmailBlock({ block }: EmailBlockProps) {
                 fontWeight: "600",
                 borderRadius: "12px",
               }}
-            >
-              {block.badgeText}
-            </div>
+              dangerouslySetInnerHTML={{
+                __html: block.badgeText || "",
+              }}
+            />
           )}
         </div>
       );
