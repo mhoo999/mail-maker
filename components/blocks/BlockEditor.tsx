@@ -3,6 +3,7 @@
 import { Block } from "@/types/block";
 import { Trash2, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TiptapEditor } from "@/components/editor/TiptapEditor";
 
 interface BlockEditorProps {
   block: Block;
@@ -59,12 +60,10 @@ export function BlockEditor({ block, onUpdate, onDelete, isDragging, dragHandleP
       case "text":
         return (
           <div className="space-y-3">
-            <textarea
-              placeholder="본문 내용"
-              value={block.content}
-              onChange={(e) => onUpdate({ ...block, content: e.target.value })}
-              rows={4}
-              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+            <TiptapEditor
+              content={block.content || ""}
+              onChange={(content) => onUpdate({ ...block, content })}
+              placeholder="본문 내용을 입력하세요..."
             />
           </div>
         );
@@ -129,12 +128,10 @@ export function BlockEditor({ block, onUpdate, onDelete, isDragging, dragHandleP
               onChange={(e) => onUpdate({ ...block, title: e.target.value })}
               className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
             />
-            <textarea
-              placeholder="내용"
-              value={block.content}
-              onChange={(e) => onUpdate({ ...block, content: e.target.value })}
-              rows={3}
-              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+            <TiptapEditor
+              content={block.content || ""}
+              onChange={(content) => onUpdate({ ...block, content })}
+              placeholder="강조 박스 내용을 입력하세요..."
             />
           </div>
         );
@@ -279,16 +276,14 @@ export function BlockEditor({ block, onUpdate, onDelete, isDragging, dragHandleP
                       }}
                       className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
                     />
-                    <textarea
-                      placeholder="내용"
-                      value={row.value}
-                      onChange={(e) => {
+                    <TiptapEditor
+                      content={row.value || ""}
+                      onChange={(content) => {
                         const newRows = [...block.rows];
-                        newRows[index] = { ...row, value: e.target.value };
+                        newRows[index] = { ...row, value: content };
                         onUpdate({ ...block, rows: newRows });
                       }}
-                      rows={2}
-                      className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                      placeholder="항목 내용을 입력하세요..."
                     />
                   </div>
                   <button
@@ -322,12 +317,10 @@ export function BlockEditor({ block, onUpdate, onDelete, isDragging, dragHandleP
               onChange={(e) => onUpdate({ ...block, companyName: e.target.value })}
               className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
             />
-            <textarea
-              placeholder="주소 및 연락처"
-              value={block.address || ""}
-              onChange={(e) => onUpdate({ ...block, address: e.target.value })}
-              rows={5}
-              className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+            <TiptapEditor
+              content={block.address || ""}
+              onChange={(content) => onUpdate({ ...block, address: content })}
+              placeholder="주소 및 연락처를 입력하세요..."
             />
             <input
               type="text"

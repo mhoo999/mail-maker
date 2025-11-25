@@ -1,4 +1,5 @@
 import { Block } from "@/types/block";
+import { convertTipTapToEmailHTML, getTextFromTipTapHTML } from "@/lib/utils";
 
 export function generateEmailHTML(blocks: Block[]): string {
   const blocksHTML = blocks.map(blockToHTML).join("\n");
@@ -54,10 +55,12 @@ function blockToHTML(block: Block): string {
               </${block.level}>\n`;
 
     case "text":
-      const textContent = escapeHtml(block.content || "본문").replace(/\n/g, '<br>');
-      return `              <p style="margin: 16px 0; font-size: 16px; color: #4e5968; line-height: 1.6; white-space: pre-line;">
-                ${textContent}
-              </p>\n`;
+      const textHTML = block.content 
+        ? convertTipTapToEmailHTML(block.content) 
+        : '<p style="margin: 16px 0; font-size: 16px; color: #4e5968; line-height: 1.6;">본문</p>';
+      return `              <div style="margin: 16px 0;">
+                ${textHTML}
+              </div>\n`;
 
     case "button":
       return `              <div style="margin: 24px 0; text-align: center;">
@@ -86,9 +89,10 @@ function blockToHTML(block: Block): string {
                   ${escapeHtml(block.title)}
                 </div>\n`;
       }
-      highlightHTML += `                <div style="font-size: 14px; color: #191f28; line-height: 1.5;">
-                  ${escapeHtml(block.content)}
-                </div>
+      const highlightContent = block.content 
+        ? convertTipTapToEmailHTML(block.content)
+        : '<div style="font-size: 14px; color: #191f28; line-height: 1.5;">내용</div>';
+      highlightHTML += `                ${highlightContent}
               </div>\n`;
       return highlightHTML;
 
@@ -148,7 +152,9 @@ ${statsHTML}
           (row, index) => `                <tr>
                   <td style="padding: 24px; border-bottom: ${index < block.rows.length - 1 ? "1px solid #e5e8eb" : "none"};">
                     <div style="font-size: 14px; color: #6b7684; margin-bottom: 6px;">${escapeHtml(row.label)}</div>
-                    <div style="font-size: 16px; font-weight: 600; color: #191f28; line-height: 1.5; white-space: pre-line;">${escapeHtml(row.value).replace(/\n/g, '<br>')}</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #191f28; line-height: 1.5;">
+                      ${row.value ? convertTipTapToEmailHTML(row.value) : "내용"}
+                    </div>
                   </td>
                 </tr>`
         )
@@ -165,7 +171,7 @@ ${infoTableHTML}
                 </div>\n`;
       }
       if (block.address) {
-        const addressHtml = escapeHtml(block.address).replace(/\n/g, '<br>');
+        const addressHtml = convertTipTapToEmailHTML(block.address);
         footerHTML += `                <div style="margin-bottom: 8px;">
                   ${addressHtml}
                 </div>\n`;

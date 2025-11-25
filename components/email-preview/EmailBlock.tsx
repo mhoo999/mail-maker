@@ -57,17 +57,17 @@ export function EmailBlock({ block }: EmailBlockProps) {
 
     case "text":
       return (
-        <p
+        <div
           style={{
             margin: "16px 0",
             fontSize: "16px",
             color: "#4e5968",
             lineHeight: "1.6",
-            whiteSpace: "pre-line",
           }}
-        >
-          {block.content || "본문을 입력하세요"}
-        </p>
+          dangerouslySetInnerHTML={{
+            __html: block.content || '<p>본문을 입력하세요</p>',
+          }}
+        />
       );
 
     case "button":
@@ -139,9 +139,10 @@ export function EmailBlock({ block }: EmailBlockProps) {
               color: colors.text,
               lineHeight: "1.5",
             }}
-          >
-            {block.content}
-          </div>
+            dangerouslySetInnerHTML={{
+              __html: block.content || '<div>내용</div>',
+            }}
+          />
         </div>
       );
 
@@ -259,9 +260,12 @@ export function EmailBlock({ block }: EmailBlockProps) {
                 <td style={{ padding: "24px", borderBottom: index < block.rows.length - 1 ? "1px solid #e5e8eb" : "none" }}>
                   <div>
                     <div style={{ fontSize: "14px", color: "#6b7684", marginBottom: "6px" }}>{row.label}</div>
-                    <div style={{ fontSize: "16px", fontWeight: "600", color: "#191f28", lineHeight: "1.5", whiteSpace: "pre-line" }}>
-                      {row.value}
-                    </div>
+                    <div
+                      style={{ fontSize: "16px", fontWeight: "600", color: "#191f28", lineHeight: "1.5" }}
+                      dangerouslySetInnerHTML={{
+                        __html: row.value || '<div>내용</div>',
+                      }}
+                    />
                   </div>
                 </td>
               </tr>
@@ -289,9 +293,12 @@ export function EmailBlock({ block }: EmailBlockProps) {
             </div>
           )}
           {block.address && (
-            <div style={{ marginBottom: "8px", whiteSpace: "pre-line" }}>
-              {block.address}
-            </div>
+            <div
+              style={{ marginBottom: "8px" }}
+              dangerouslySetInnerHTML={{
+                __html: block.address,
+              }}
+            />
           )}
           {block.copyright && <div>{block.copyright}</div>}
         </div>
