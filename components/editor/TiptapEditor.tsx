@@ -138,7 +138,7 @@ export function TiptapEditor({
                     className="fixed inset-0 z-10"
                     onClick={() => setShowFontSizePicker(false)}
                   />
-                  <div className="absolute top-full left-0 mt-1 bg-white border border-toss-gray-300 rounded-lg shadow-lg z-20 p-1 min-w-[100px]">
+                  <div className="absolute top-full left-0 mt-1 bg-white border border-toss-gray-300 rounded-lg shadow-lg z-20 p-1 w-[120px]">
                     {[10, 12, 14, 16, 18, 20, 24, 28, 32].map((size) => (
                       <button
                         key={size}
@@ -190,7 +190,7 @@ export function TiptapEditor({
                     className="fixed inset-0 z-10"
                     onClick={() => setShowColorPicker(false)}
                   />
-                  <div className="absolute top-full left-0 mt-1 bg-white border border-toss-gray-300 rounded-lg shadow-lg z-20 p-2">
+                  <div className="absolute top-full left-0 mt-1 bg-white border border-toss-gray-300 rounded-lg shadow-lg z-20 p-2 w-[200px]">
                     <div className="grid grid-cols-6 gap-1 mb-2">
                       {[
                         "#000000", "#333333", "#666666", "#999999", "#CCCCCC", "#FFFFFF",
@@ -290,7 +290,7 @@ export function TiptapEditor({
           </div>
         </div>
       )}
-      <div className={editable ? "p-3 min-h-[100px] max-h-[300px] overflow-y-auto" : "p-3"}>
+      <div className={editable ? "p-3 min-h-[100px] max-h-[300px] overflow-y-auto cursor-text" : "p-3 cursor-default"}>
         <EditorContent editor={editor} />
       </div>
     </div>

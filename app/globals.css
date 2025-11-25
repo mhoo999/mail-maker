@@ -16,6 +16,7 @@ body {
 /* TipTap Editor Styles */
 .ProseMirror {
   outline: none;
+  cursor: text;
 }
 
 .ProseMirror p {
