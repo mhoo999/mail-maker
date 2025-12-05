@@ -7,8 +7,9 @@ import { Block, BlockType } from "@/types/block";
 import { generateId } from "@/lib/utils";
 import { SortableBlock } from "./SortableBlock";
 import { EmailPreview } from "./EmailPreview";
-import { Plus, Eye, Code, Copy, Check, FileText, Save, Trash, Home } from "lucide-react";
+import { Plus, Eye, Code, Copy, Check, FileText, Save, Trash, Home, Upload } from "lucide-react";
 import { generateEmailHTML } from "@/lib/html-generator";
+import { parseEmailHTML, isMailMakerHTML } from "@/lib/html-parser";
 import { TEMPLATES, createBlocksFromTemplate } from "@/lib/templates";
 import { getSavedTemplates, saveTemplate, deleteTemplate as deleteStoredTemplate, SavedTemplate } from "@/lib/storage";
 
@@ -37,6 +38,8 @@ export function MailBuilder() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [templateName, setTemplateName] = useState("");
   const [templateDescription, setTemplateDescription] = useState("");
+  const [showImportDialog, setShowImportDialog] = useState(false);
+  const [importHTML, setImportHTML] = useState("");
 
   useEffect(() => {
     setSavedTemplates(getSavedTemplates());
@@ -160,6 +163,29 @@ export function MailBuilder() {
     setShowTemplates(false);
   };
 
+  const handleImportHTML = () => {
+    if (!importHTML.trim()) {
+      alert("HTML 코드를 입력해주세요.");
+      return;
+    }
+
+    if (!isMailMakerHTML(importHTML)) {
+      alert("Mail Maker가 생성한 HTML이 아닙니다.\nMAIL_MAKER_BLOCK 메타데이터가 포함된 HTML만 가져올 수 있습니다.");
+      return;
+    }
+
+    try {
+      const importedBlocks = parseEmailHTML(importHTML);
+      setBlocks(importedBlocks);
+      setShowImportDialog(false);
+      setImportHTML("");
+      setShowTemplates(false);
+      alert(`${importedBlocks.length}개의 블록을 성공적으로 가져왔습니다!`);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "HTML 가져오기에 실패했습니다.");
+    }
+  };
+
   if (showTemplates && blocks.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-toss-gray-100 p-6">
@@ -216,12 +242,21 @@ export function MailBuilder() {
           )}
 
           <div className="text-center">
-            <button
-              onClick={startFromScratch}
-              className="px-6 py-3 text-toss-gray-700 hover:text-toss-blue font-medium transition-colors"
-            >
-              빈 페이지에서 시작하기
-            </button>
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={startFromScratch}
+                className="px-6 py-3 text-toss-gray-700 hover:text-toss-blue font-medium transition-colors"
+              >
+                빈 페이지에서 시작하기
+              </button>
+              <button
+                onClick={() => setShowImportDialog(true)}
+                className="flex items-center gap-2 px-6 py-3 text-toss-gray-700 hover:text-toss-blue font-medium transition-colors"
+              >
+                <Upload className="w-4 h-4" />
+                HTML 가져오기
+              </button>
+            </div>
           </div>
 
           <div className="mt-20 pt-6 border-t border-toss-gray-200">
@@ -396,6 +431,52 @@ export function MailBuilder() {
                 className="px-4 py-2 bg-toss-blue hover:bg-toss-blue-dark text-white rounded-lg transition-colors"
               >
                 저장
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* HTML 가져오기 다이얼로그 */}
+      {showImportDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full p-6">
+            <h3 className="text-xl font-bold text-toss-gray-900 mb-4">HTML 가져오기</h3>
+            <div className="mb-4">
+              <div className="bg-toss-blue-light border border-toss-blue rounded-lg p-3 mb-4">
+                <p className="text-sm text-toss-gray-700">
+                  💡 <strong>Mail Maker</strong>가 생성한 HTML만 가져올 수 있습니다.
+                  <br />
+                  HTML 주석에 포함된 블록 메타데이터를 사용하여 정확하게 복원합니다.
+                </p>
+              </div>
+              <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                HTML 코드 붙여넣기
+              </label>
+              <textarea
+                value={importHTML}
+                onChange={(e) => setImportHTML(e.target.value)}
+                placeholder="Mail Maker가 생성한 HTML 코드를 여기에 붙여넣으세요..."
+                rows={12}
+                className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue font-mono text-sm"
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  setShowImportDialog(false);
+                  setImportHTML("");
+                }}
+                className="px-4 py-2 text-toss-gray-700 hover:bg-toss-gray-100 rounded-lg transition-colors"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleImportHTML}
+                className="px-4 py-2 bg-toss-blue hover:bg-toss-blue-dark text-white rounded-lg transition-colors"
+              >
+                가져오기
               </button>
             </div>
           </div>
