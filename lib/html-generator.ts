@@ -31,54 +31,56 @@ ${blocksHTML}
 }
 
 function blockToHTML(block: Block): string {
-  // 블록 메타데이터를 HTML 주석으로 추가 (역변환용)
-  const metadata = `<!-- MAIL_MAKER_BLOCK ${JSON.stringify(block)} -->\n`;
+  // 블록 메타데이터를 data 속성에 저장 (이메일 클라이언트 호환)
+  const metadataJSON = JSON.stringify(block).replace(/"/g, '&quot;');
+  const wrapperStart = `              <div data-mail-maker-block="${metadataJSON}">\n`;
+  const wrapperEnd = `              </div>\n`;
 
   switch (block.type) {
     case "header":
-      let headerHTML = metadata;
+      let headerHTML = "";
       if (block.logoUrl) {
-        headerHTML += `              <div style="text-align: center; margin-bottom: 24px;">
-                <img src="${block.logoUrl}" alt="${block.logoAlt || "Logo"}" style="max-width: 120px; height: auto;">
-              </div>\n`;
+        headerHTML += `                <div style="text-align: center; margin-bottom: 24px;">
+                  <img src="${block.logoUrl}" alt="${block.logoAlt || "Logo"}" style="max-width: 120px; height: auto;">
+                </div>\n`;
       }
       if (block.badgeText) {
         // TipTap HTML을 이메일 호환 형식으로 변환
         const badgeContent = convertTipTapToEmailHTML(block.badgeText);
         // 배지 박스 스타일 (텍스트 스타일은 TipTap HTML에서 가져옴)
-        headerHTML += `              <div style="text-align: center; margin-bottom: 24px;">
-                <span style="display: inline-block; padding: 4px 12px; background-color: #e8f3ff; color: #3182f6; font-size: 12px; font-weight: 600; border-radius: 12px; line-height: 1.4;">
-                  ${badgeContent}
-                </span>
-              </div>\n`;
+        headerHTML += `                <div style="text-align: center; margin-bottom: 24px;">
+                  <span style="display: inline-block; padding: 4px 12px; background-color: #e8f3ff; color: #3182f6; font-size: 12px; font-weight: 600; border-radius: 12px; line-height: 1.4;">
+                    ${badgeContent}
+                  </span>
+                </div>\n`;
       }
-      return headerHTML;
+      return headerHTML ? wrapperStart + headerHTML + wrapperEnd : "";
 
     case "title":
       const fontSize = block.level === "h1" ? "28px" : "20px";
-      return `${metadata}              <${block.level} style="margin: 24px 0 16px 0; font-size: ${fontSize}; font-weight: 700; color: #191f28; line-height: 1.4;">
-                ${escapeHtml(block.text || "제목")}
-              </${block.level}>\n`;
+      return `${wrapperStart}                <${block.level} style="margin: 24px 0 16px 0; font-size: ${fontSize}; font-weight: 700; color: #191f28; line-height: 1.4;">
+                  ${escapeHtml(block.text || "제목")}
+                </${block.level}>\n${wrapperEnd}`;
 
     case "text":
       const textHTML = block.content
         ? convertTipTapToEmailHTML(block.content)
         : '<p style="margin: 16px 0; font-size: 16px; color: #4e5968; line-height: 1.6;">본문</p>';
-      return `${metadata}              <div style="margin: 16px 0;">
-                ${textHTML}
-              </div>\n`;
+      return `${wrapperStart}                <div style="margin: 16px 0;">
+                  ${textHTML}
+                </div>\n${wrapperEnd}`;
 
     case "button":
-      return `${metadata}              <div style="margin: 24px 0; text-align: center;">
-                <a href="${block.url || "#"}" style="display: inline-block; padding: 14px 28px; background-color: #3182f6; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; border-radius: 8px;">
-                  ${escapeHtml(block.text || "버튼")}
-                </a>
-              </div>\n`;
+      return `${wrapperStart}                <div style="margin: 24px 0; text-align: center;">
+                  <a href="${block.url || "#"}" style="display: inline-block; padding: 14px 28px; background-color: #3182f6; color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; border-radius: 8px;">
+                    ${escapeHtml(block.text || "버튼")}
+                  </a>
+                </div>\n${wrapperEnd}`;
 
     case "image":
-      return `${metadata}              <div style="margin: 24px 0; text-align: center;">
-                <img src="${block.url || "https://via.placeholder.com/600x300"}" alt="${escapeHtml(block.alt || "이미지")}" style="max-width: 100%; height: auto; border-radius: 8px;">
-              </div>\n`;
+      return `${wrapperStart}                <div style="margin: 24px 0; text-align: center;">
+                  <img src="${block.url || "https://via.placeholder.com/600x300"}" alt="${escapeHtml(block.alt || "이미지")}" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>\n${wrapperEnd}`;
 
     case "highlight":
       const variantColors = {
@@ -89,33 +91,33 @@ function blockToHTML(block: Block): string {
       };
       const colors = variantColors[block.variant];
 
-      let highlightHTML = `${metadata}              <div style="margin: 24px 0; padding: 16px; background-color: ${colors.bg}; border-left: 4px solid ${colors.border}; border-radius: 4px;">\n`;
+      let highlightHTML = `                <div style="margin: 24px 0; padding: 16px; background-color: ${colors.bg}; border-left: 4px solid ${colors.border}; border-radius: 4px;">\n`;
       if (block.title) {
-        highlightHTML += `                <div style="font-size: 16px; font-weight: 600; color: #191f28; margin-bottom: 8px;">
-                  ${escapeHtml(block.title)}
-                </div>\n`;
+        highlightHTML += `                  <div style="font-size: 16px; font-weight: 600; color: #191f28; margin-bottom: 8px;">
+                    ${escapeHtml(block.title)}
+                  </div>\n`;
       }
       const highlightContent = block.content
         ? convertTipTapToEmailHTML(block.content)
         : '<div style="font-size: 14px; color: #191f28; line-height: 1.5;">내용</div>';
-      highlightHTML += `                ${highlightContent}
-              </div>\n`;
-      return highlightHTML;
+      highlightHTML += `                  ${highlightContent}
+                </div>\n`;
+      return wrapperStart + highlightHTML + wrapperEnd;
 
     case "divider":
-      return `${metadata}              <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e8eb;">\n`;
+      return `${wrapperStart}                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e8eb;">\n${wrapperEnd}`;
 
     case "spacer":
-      return `${metadata}              <div style="height: ${block.height}px;"></div>\n`;
+      return `${wrapperStart}                <div style="height: ${block.height}px;"></div>\n${wrapperEnd}`;
 
     case "list":
       const listTag = block.listType === "bullet" ? "ul" : "ol";
       const listItems = block.items
-        .map((item) => `                  <li style="margin-bottom: 8px;">${escapeHtml(item)}</li>`)
+        .map((item) => `                    <li style="margin-bottom: 8px;">${escapeHtml(item)}</li>`)
         .join("\n");
-      return `${metadata}              <${listTag} style="margin: 16px 0; padding-left: ${block.listType === "bullet" ? "20px" : "24px"}; font-size: 15px; color: #4e5968; line-height: 1.8;">
+      return `${wrapperStart}                <${listTag} style="margin: 16px 0; padding-left: ${block.listType === "bullet" ? "20px" : "24px"}; font-size: 15px; color: #4e5968; line-height: 1.8;">
 ${listItems}
-              </${listTag}>\n`;
+                </${listTag}>\n${wrapperEnd}`;
 
     case "badge":
       const badgeColors = {
@@ -125,70 +127,70 @@ ${listItems}
         green: { bg: "#4caf50", color: "#ffffff" },
       };
       const badgeColor = badgeColors[block.variant];
-      return `${metadata}              <div style="margin: 16px 0;">
-                <div style="display: inline-block; background-color: ${badgeColor.bg}; color: ${badgeColor.color}; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;">
-                  ${escapeHtml(block.text)}
-                </div>
-              </div>\n`;
+      return `${wrapperStart}                <div style="margin: 16px 0;">
+                  <div style="display: inline-block; background-color: ${badgeColor.bg}; color: ${badgeColor.color}; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;">
+                    ${escapeHtml(block.text)}
+                  </div>
+                </div>\n${wrapperEnd}`;
 
     case "stats":
       const statsHTML = block.stats
         .map(
-          (stat) => `                <td style="padding: 4px; width: ${100 / block.stats.length}%;">
-                  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f9fafb; border-radius: 12px; padding: 24px 20px; text-align: center;">
-                    <tr>
-                      <td>
-                        <div style="font-size: 13px; color: #6b7684; margin-bottom: 8px; font-weight: 500;">${escapeHtml(stat.label)}</div>
-                        <div style="font-size: 28px; font-weight: 700; color: #191f28; line-height: 1.2;">${escapeHtml(stat.value)}</div>
-                      </td>
-                    </tr>
-                  </table>
-                </td>`
+          (stat) => `                  <td style="padding: 4px; width: ${100 / block.stats.length}%;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f9fafb; border-radius: 12px; padding: 24px 20px; text-align: center;">
+                      <tr>
+                        <td>
+                          <div style="font-size: 13px; color: #6b7684; margin-bottom: 8px; font-weight: 500;">${escapeHtml(stat.label)}</div>
+                          <div style="font-size: 28px; font-weight: 700; color: #191f28; line-height: 1.2;">${escapeHtml(stat.value)}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>`
         )
         .join("\n");
-      return `${metadata}              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0;">
-                <tr>
+      return `${wrapperStart}                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0;">
+                  <tr>
 ${statsHTML}
-                </tr>
-              </table>\n`;
+                  </tr>
+                </table>\n${wrapperEnd}`;
 
     case "infoTable":
       const infoTableHTML = block.rows
         .map(
-          (row, index) => `                <tr>
-                  <td style="padding: 24px; border-bottom: ${index < block.rows.length - 1 ? "1px solid #e5e8eb" : "none"};">
-                    <div style="font-size: 14px; color: #6b7684; margin-bottom: 6px;">${escapeHtml(row.label)}</div>
-                    <div style="font-size: 16px; font-weight: 600; color: #191f28; line-height: 1.5;">
-                      ${row.value ? convertTipTapToEmailHTML(row.value) : "내용"}
-                    </div>
-                  </td>
-                </tr>`
+          (row, index) => `                  <tr>
+                    <td style="padding: 24px; border-bottom: ${index < block.rows.length - 1 ? "1px solid #e5e8eb" : "none"};">
+                      <div style="font-size: 14px; color: #6b7684; margin-bottom: 6px;">${escapeHtml(row.label)}</div>
+                      <div style="font-size: 16px; font-weight: 600; color: #191f28; line-height: 1.5;">
+                        ${row.value ? convertTipTapToEmailHTML(row.value) : "내용"}
+                      </div>
+                    </td>
+                  </tr>`
         )
         .join("\n");
-      return `${metadata}              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; background-color: #ffffff; border: 1px solid #e5e8eb; border-radius: 12px; overflow: hidden;">
+      return `${wrapperStart}                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0; background-color: #ffffff; border: 1px solid #e5e8eb; border-radius: 12px; overflow: hidden;">
 ${infoTableHTML}
-              </table>\n`;
+                </table>\n${wrapperEnd}`;
 
     case "footer":
-      let footerHTML = `${metadata}              <div style="margin-top: 48px; padding: 24px; background-color: #f9fafb; text-align: center; font-size: 12px; color: #6b7684; line-height: 1.6; border-radius: 4px;">\n`;
+      let footerHTML = `                <div style="margin-top: 48px; padding: 24px; background-color: #f9fafb; text-align: center; font-size: 12px; color: #6b7684; line-height: 1.6; border-radius: 4px;">\n`;
       if (block.companyName) {
-        footerHTML += `                <div style="font-weight: 600; margin-bottom: 8px;">
-                  ${escapeHtml(block.companyName)}
-                </div>\n`;
+        footerHTML += `                  <div style="font-weight: 600; margin-bottom: 8px;">
+                    ${escapeHtml(block.companyName)}
+                  </div>\n`;
       }
       if (block.address) {
         const addressHtml = convertTipTapToEmailHTML(block.address);
-        footerHTML += `                <div style="margin-bottom: 8px;">
-                  ${addressHtml}
-                </div>\n`;
+        footerHTML += `                  <div style="margin-bottom: 8px;">
+                    ${addressHtml}
+                  </div>\n`;
       }
       if (block.copyright) {
-        footerHTML += `                <div>
-                  ${escapeHtml(block.copyright)}
-                </div>\n`;
+        footerHTML += `                  <div>
+                    ${escapeHtml(block.copyright)}
+                  </div>\n`;
       }
-      footerHTML += `              </div>\n`;
-      return footerHTML;
+      footerHTML += `                </div>\n`;
+      return wrapperStart + footerHTML + wrapperEnd;
 
     default:
       return "";
