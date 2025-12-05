@@ -282,6 +282,52 @@ export function MailBuilder() {
             </div>
           </div>
         </div>
+
+        {/* HTML 가져오기 다이얼로그 */}
+        {showImportDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl max-w-2xl w-full p-6">
+              <h3 className="text-xl font-bold text-toss-gray-900 mb-4">HTML 가져오기</h3>
+              <div className="mb-4">
+                <div className="bg-toss-blue-light border border-toss-blue rounded-lg p-3 mb-4">
+                  <p className="text-sm text-toss-gray-700">
+                    💡 <strong>Mail Maker</strong>가 생성한 HTML만 가져올 수 있습니다.
+                    <br />
+                    HTML 주석에 포함된 블록 메타데이터를 사용하여 정확하게 복원합니다.
+                  </p>
+                </div>
+                <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                  HTML 코드 붙여넣기
+                </label>
+                <textarea
+                  value={importHTML}
+                  onChange={(e) => setImportHTML(e.target.value)}
+                  placeholder="Mail Maker가 생성한 HTML 코드를 여기에 붙여넣으세요..."
+                  rows={12}
+                  className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue font-mono text-sm"
+                  autoFocus
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  onClick={() => {
+                    setShowImportDialog(false);
+                    setImportHTML("");
+                  }}
+                  className="px-4 py-2 text-toss-gray-700 hover:bg-toss-gray-100 rounded-lg transition-colors"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={handleImportHTML}
+                  className="px-4 py-2 bg-toss-blue hover:bg-toss-blue-dark text-white rounded-lg transition-colors"
+                >
+                  가져오기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
