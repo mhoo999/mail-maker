@@ -202,7 +202,7 @@ export function MailBuilder() {
                 onClick={startFromScratch}
                 className="bg-white p-6 border-2 border-toss-gray-300 hover:border-black transition-colors text-left"
               >
-                <FileText className="w-8 h-8 text-black mb-3" />
+                <FileText className="w-8 h-8 text-toss-gray-700 mb-3" />
                 <h3 className="text-lg font-bold text-toss-gray-900 mb-2">빈 페이지에서 시작하기</h3>
                 <p className="text-sm text-toss-gray-600">처음부터 새로운 이메일을 만들어보세요</p>
               </button>
@@ -210,17 +210,20 @@ export function MailBuilder() {
                 onClick={() => setShowImportDialog(true)}
                 className="bg-white p-6 border-2 border-toss-gray-300 hover:border-black transition-colors text-left"
               >
-                <Upload className="w-8 h-8 text-black mb-3" />
+                <Upload className="w-8 h-8 text-toss-gray-700 mb-3" />
                 <h3 className="text-lg font-bold text-toss-gray-900 mb-2">HTML 가져오기</h3>
                 <p className="text-sm text-toss-gray-600">기존 HTML 코드를 불러와서 편집하세요</p>
               </button>
+            </div>
+            <div className="mt-6 mb-6 border-t border-toss-gray-300"></div>
+            <div className="grid md:grid-cols-2 gap-4">
               {TEMPLATES.map((template) => (
                 <button
                   key={template.id}
                   onClick={() => loadTemplate(template.id)}
                   className="bg-white p-6 border-2 border-toss-gray-300 hover:border-black transition-colors text-left"
                 >
-                  <FileText className="w-8 h-8 text-black mb-3" />
+                  <FileText className="w-8 h-8 text-toss-gray-700 mb-3" />
                   <h3 className="text-lg font-bold text-toss-gray-900 mb-2">{template.name}</h3>
                   <p className="text-sm text-toss-gray-600">{template.description}</p>
                 </button>
@@ -241,7 +244,7 @@ export function MailBuilder() {
                       onClick={() => loadSavedTemplate(template)}
                       className="w-full text-left"
                     >
-                      <FileText className="w-8 h-8 text-black mb-3" />
+                      <FileText className="w-8 h-8 text-toss-gray-700 mb-3" />
                       <h3 className="text-lg font-bold text-toss-gray-900 mb-2">{template.name}</h3>
                       <p className="text-sm text-toss-gray-600">{template.description || "사용자 정의 템플릿"}</p>
                     </button>
