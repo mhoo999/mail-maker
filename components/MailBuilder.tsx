@@ -193,6 +193,14 @@ export function MailBuilder() {
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-toss-gray-900 mb-4">Mail Maker</h1>
             <p className="text-lg text-toss-gray-600">HTML 이메일을 쉽게 만들어보세요</p>
+            <a
+              href="https://need-coffee.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-4 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg transition-colors"
+            >
+              개발자 커피 한잔 사주기
+            </a>
           </div>
 
           <div className="mb-8">
@@ -256,29 +264,6 @@ export function MailBuilder() {
                 <Upload className="w-4 h-4" />
                 HTML 가져오기
               </button>
-            </div>
-          </div>
-
-          <div className="mt-20 pt-6 border-t border-toss-gray-200">
-            <div className="text-center">
-              <p className="text-xs text-toss-gray-500 mb-3">Developer</p>
-              <div className="flex items-center justify-center gap-3 text-sm text-toss-gray-600">
-                <a
-                  href="mailto:famehoon@mz.co.kr"
-                  className="hover:text-toss-blue transition-colors"
-                >
-                  famehoon@mz.co.kr
-                </a>
-                <span className="text-toss-gray-300">·</span>
-                <a
-                  href="https://github.com/mhoo999"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-toss-blue transition-colors"
-                >
-                  GitHub
-                </a>
-              </div>
             </div>
           </div>
         </div>
