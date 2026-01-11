@@ -188,19 +188,12 @@ export function MailBuilder() {
 
   if (showTemplates && blocks.length === 0) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-toss-gray-100 p-6">
-        <div className="max-w-4xl w-full">
+      <div className="flex flex-col min-h-screen bg-toss-gray-100">
+        <div className="flex-1 flex items-center justify-center p-6">
+          <div className="max-w-4xl w-full">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-toss-gray-900 mb-4">Mail Maker</h1>
             <p className="text-lg text-toss-gray-600">HTML 이메일을 쉽게 만들어보세요</p>
-            <a
-              href="https://need-coffee.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-4 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg transition-colors"
-            >
-              개발자 커피 한잔 사주기
-            </a>
           </div>
 
           <div className="mb-8">
@@ -210,9 +203,9 @@ export function MailBuilder() {
                 <button
                   key={template.id}
                   onClick={() => loadTemplate(template.id)}
-                  className="bg-white p-6 rounded-xl border-2 border-toss-gray-200 hover:border-toss-blue hover:shadow-lg transition-all text-left"
+                  className="bg-white p-6 border-2 border-toss-gray-300 hover:border-black transition-colors text-left"
                 >
-                  <FileText className="w-8 h-8 text-toss-blue mb-3" />
+                  <FileText className="w-8 h-8 text-black mb-3" />
                   <h3 className="text-lg font-bold text-toss-gray-900 mb-2">{template.name}</h3>
                   <p className="text-sm text-toss-gray-600">{template.description}</p>
                 </button>
@@ -227,19 +220,19 @@ export function MailBuilder() {
                 {savedTemplates.map((template) => (
                   <div
                     key={template.id}
-                    className="bg-white p-6 rounded-xl border-2 border-toss-gray-200 hover:border-toss-blue hover:shadow-lg transition-all relative group"
+                    className="bg-white p-6 border-2 border-toss-gray-300 hover:border-black transition-colors relative group"
                   >
                     <button
                       onClick={() => loadSavedTemplate(template)}
                       className="w-full text-left"
                     >
-                      <FileText className="w-8 h-8 text-toss-blue mb-3" />
+                      <FileText className="w-8 h-8 text-black mb-3" />
                       <h3 className="text-lg font-bold text-toss-gray-900 mb-2">{template.name}</h3>
                       <p className="text-sm text-toss-gray-600">{template.description || "사용자 정의 템플릿"}</p>
                     </button>
                     <button
                       onClick={() => handleDeleteTemplate(template.id)}
-                      className="absolute top-4 right-4 p-2 text-toss-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-4 right-4 p-2 text-toss-gray-400 hover:text-black opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Trash className="w-5 h-5" />
                     </button>
@@ -253,20 +246,46 @@ export function MailBuilder() {
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={startFromScratch}
-                className="px-6 py-3 text-toss-gray-700 hover:text-toss-blue font-medium transition-colors"
+                className="px-6 py-3 border-2 border-black text-black hover:bg-black hover:text-white font-medium transition-colors"
               >
                 빈 페이지에서 시작하기
               </button>
               <button
                 onClick={() => setShowImportDialog(true)}
-                className="flex items-center gap-2 px-6 py-3 text-toss-gray-700 hover:text-toss-blue font-medium transition-colors"
+                className="flex items-center gap-2 px-6 py-3 border-2 border-black text-black hover:bg-black hover:text-white font-medium transition-colors"
               >
                 <Upload className="w-4 h-4" />
                 HTML 가져오기
               </button>
             </div>
           </div>
+          </div>
         </div>
+
+        {/* 푸터 */}
+        <footer className="mt-12 pt-10 pb-4 border-t border-[#e5e5e5] text-center bg-toss-gray-100">
+          <div className="flex flex-col md:flex-row gap-4 justify-center mb-6 px-6">
+            <a
+              href="https://hoons-service-archive.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 bg-black hover:bg-[#333333] text-white font-medium transition-colors rounded md:w-auto w-full"
+            >
+              다른 서비스 이용해보기
+            </a>
+            <a
+              href="https://need-coffee.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 bg-black hover:bg-[#333333] text-white font-medium transition-colors rounded md:w-auto w-full"
+            >
+              개발자 커피 한잔 사주기
+            </a>
+          </div>
+          <div className="text-[#666666] text-sm">
+            mhoo999@naver.com
+          </div>
+        </footer>
 
         {/* HTML 가져오기 다이얼로그 */}
         {showImportDialog && (
@@ -274,7 +293,7 @@ export function MailBuilder() {
             <div className="bg-white rounded-xl max-w-2xl w-full p-6">
               <h3 className="text-xl font-bold text-toss-gray-900 mb-4">HTML 가져오기</h3>
               <div className="mb-4">
-                <div className="bg-toss-blue-light border border-toss-blue rounded-lg p-3 mb-4">
+                <div className="bg-toss-gray-100 border border-black p-3 mb-4">
                   <p className="text-sm text-toss-gray-700">
                     💡 <strong>Mail Maker</strong>가 생성한 HTML만 가져올 수 있습니다.
                     <br />
@@ -305,7 +324,7 @@ export function MailBuilder() {
                 </button>
                 <button
                   onClick={handleImportHTML}
-                  className="px-4 py-2 bg-toss-blue hover:bg-toss-blue-dark text-white rounded-lg transition-colors"
+                  className="px-4 py-2 bg-black hover:bg-gray-800 text-white transition-colors border border-black"
                 >
                   가져오기
                 </button>
@@ -318,8 +337,9 @@ export function MailBuilder() {
   }
 
   return (
-    <div className="flex h-screen bg-toss-gray-100">
-      {/* 왼쪽 패널: 블록 추가 및 편집 */}
+    <div className="flex flex-col h-screen bg-toss-gray-100">
+      <div className="flex flex-1 overflow-hidden">
+        {/* 왼쪽 패널: 블록 추가 및 편집 */}
       <div className="w-96 bg-white border-r border-toss-gray-300 overflow-y-auto">
         <div className="p-6">
           <h2 className="text-xl font-bold text-toss-gray-900 mb-4">블록 추가</h2>
@@ -328,7 +348,7 @@ export function MailBuilder() {
               <button
                 key={type}
                 onClick={() => addBlock(type)}
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-toss-gray-100 hover:bg-toss-blue-light hover:text-toss-blue text-toss-gray-700 rounded-lg transition-colors text-sm font-medium"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-toss-gray-100 hover:bg-black hover:text-white text-toss-gray-700 transition-colors text-sm font-medium border border-toss-gray-300 hover:border-black"
               >
                 <Plus className="w-4 h-4" />
                 {label}
@@ -367,7 +387,7 @@ export function MailBuilder() {
                 setBlocks([]);
                 setShowTemplates(true);
               }}
-              className="p-2 text-toss-gray-600 hover:text-toss-blue hover:bg-toss-gray-100 rounded-lg transition-colors"
+              className="p-2 text-toss-gray-600 hover:text-black hover:bg-toss-gray-100 transition-colors border border-transparent hover:border-black"
               title="처음으로"
             >
               <Home className="w-5 h-5" />
@@ -392,7 +412,7 @@ export function MailBuilder() {
             </button>
             <button
               onClick={copyHtmlToClipboard}
-              className="flex items-center gap-2 px-4 py-2 bg-toss-blue hover:bg-toss-blue-dark text-white rounded-lg transition-colors text-sm font-medium disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-black hover:bg-gray-800 text-white transition-colors text-sm font-medium disabled:opacity-50 border border-black"
               disabled={blocks.length === 0}
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -413,6 +433,32 @@ export function MailBuilder() {
           )}
         </div>
       </div>
+      </div>
+
+      {/* 푸터 */}
+      <footer className="mt-auto pt-10 pb-4 border-t border-[#e5e5e5] text-center bg-toss-gray-100">
+        <div className="flex flex-col md:flex-row gap-4 justify-center mb-6 px-6">
+          <a
+            href="https://hoons-service-archive.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-6 py-3 bg-black hover:bg-[#333333] text-white font-medium transition-colors rounded md:w-auto w-full"
+          >
+            다른 서비스 이용해보기
+          </a>
+          <a
+            href="https://need-coffee.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-6 py-3 bg-black hover:bg-[#333333] text-white font-medium transition-colors rounded md:w-auto w-full"
+          >
+            개발자 커피 한잔 사주기
+          </a>
+        </div>
+        <div className="text-[#666666] text-sm">
+          mhoo999@naver.com
+        </div>
+      </footer>
 
       {/* 템플릿 저장 다이얼로그 */}
       {showSaveDialog && (
@@ -459,7 +505,7 @@ export function MailBuilder() {
               </button>
               <button
                 onClick={handleSaveTemplate}
-                className="px-4 py-2 bg-toss-blue hover:bg-toss-blue-dark text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-black hover:bg-gray-800 text-white transition-colors border border-black"
               >
                 저장
               </button>
@@ -474,7 +520,7 @@ export function MailBuilder() {
           <div className="bg-white rounded-xl max-w-2xl w-full p-6">
             <h3 className="text-xl font-bold text-toss-gray-900 mb-4">HTML 가져오기</h3>
             <div className="mb-4">
-              <div className="bg-toss-blue-light border border-toss-blue rounded-lg p-3 mb-4">
+              <div className="bg-toss-gray-100 border border-black p-3 mb-4">
                 <p className="text-sm text-toss-gray-700">
                   💡 <strong>Mail Maker</strong>가 생성한 HTML만 가져올 수 있습니다.
                   <br />
@@ -505,7 +551,7 @@ export function MailBuilder() {
               </button>
               <button
                 onClick={handleImportHTML}
-                className="px-4 py-2 bg-toss-blue hover:bg-toss-blue-dark text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-black hover:bg-gray-800 text-white transition-colors border border-black"
               >
                 가져오기
               </button>
