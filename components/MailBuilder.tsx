@@ -197,8 +197,23 @@ export function MailBuilder() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-toss-gray-900 mb-4">기본 템플릿</h2>
             <div className="grid md:grid-cols-2 gap-4">
+              <button
+                onClick={startFromScratch}
+                className="bg-white p-6 border-2 border-toss-gray-300 hover:border-black transition-colors text-left"
+              >
+                <FileText className="w-8 h-8 text-black mb-3" />
+                <h3 className="text-lg font-bold text-toss-gray-900 mb-2">빈 페이지에서 시작하기</h3>
+                <p className="text-sm text-toss-gray-600">처음부터 새로운 이메일을 만들어보세요</p>
+              </button>
+              <button
+                onClick={() => setShowImportDialog(true)}
+                className="bg-white p-6 border-2 border-toss-gray-300 hover:border-black transition-colors text-left"
+              >
+                <Upload className="w-8 h-8 text-black mb-3" />
+                <h3 className="text-lg font-bold text-toss-gray-900 mb-2">HTML 가져오기</h3>
+                <p className="text-sm text-toss-gray-600">기존 HTML 코드를 불러와서 편집하세요</p>
+              </button>
               {TEMPLATES.map((template) => (
                 <button
                   key={template.id}
@@ -241,24 +256,6 @@ export function MailBuilder() {
               </div>
             </div>
           )}
-
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-4">
-              <button
-                onClick={startFromScratch}
-                className="px-6 py-3 border-2 border-black text-black hover:bg-black hover:text-white font-medium transition-colors"
-              >
-                빈 페이지에서 시작하기
-              </button>
-              <button
-                onClick={() => setShowImportDialog(true)}
-                className="flex items-center gap-2 px-6 py-3 border-2 border-black text-black hover:bg-black hover:text-white font-medium transition-colors"
-              >
-                <Upload className="w-4 h-4" />
-                HTML 가져오기
-              </button>
-            </div>
-          </div>
           </div>
         </div>
 
@@ -434,31 +431,6 @@ export function MailBuilder() {
         </div>
       </div>
       </div>
-
-      {/* 푸터 */}
-      <footer className="mt-auto pt-10 pb-4 border-t border-[#e5e5e5] text-center bg-toss-gray-100">
-        <div className="flex flex-col md:flex-row gap-4 justify-center mb-6 px-6">
-          <a
-            href="https://hoons-service-archive.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-6 py-3 bg-black hover:bg-[#333333] text-white font-medium transition-colors rounded md:w-auto w-full"
-          >
-            다른 서비스 이용해보기
-          </a>
-          <a
-            href="https://need-coffee.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-6 py-3 bg-black hover:bg-[#333333] text-white font-medium transition-colors rounded md:w-auto w-full"
-          >
-            개발자 커피 한잔 사주기
-          </a>
-        </div>
-        <div className="text-[#666666] text-sm">
-          mhoo999@naver.com
-        </div>
-      </footer>
 
       {/* 템플릿 저장 다이얼로그 */}
       {showSaveDialog && (
