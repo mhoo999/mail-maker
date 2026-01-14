@@ -274,7 +274,7 @@ export function MailBuilder() {
               다른 서비스 이용해보기
             </a>
             <a
-              href="https://buymeacoffee.com/hoonsdev"
+              href="https://hoons-service-archive.vercel.app/#coffee"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block px-6 py-3 bg-black hover:bg-[#333333] text-white font-medium transition-colors rounded md:w-auto w-full"
