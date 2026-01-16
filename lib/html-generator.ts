@@ -1,8 +1,19 @@
 import { Block } from "@/types/block";
 import { convertTipTapToEmailHTML, getTextFromTipTapHTML } from "@/lib/utils";
+import { EmailLayoutSettings, DEFAULT_LAYOUT_SETTINGS } from "@/types/layout";
 
-export function generateEmailHTML(blocks: Block[]): string {
+export function generateEmailHTML(blocks: Block[], layoutSettings: EmailLayoutSettings = DEFAULT_LAYOUT_SETTINGS): string {
   const blocksHTML = blocks.map(blockToHTML).join("\n");
+
+  // 정렬 방식에 따른 margin 스타일 계산
+  let marginStyle = "";
+  if (layoutSettings.alignment === "center") {
+    marginStyle = "margin: 0 auto;";
+  } else if (layoutSettings.alignment === "left") {
+    marginStyle = "margin: 0;";
+  } else if (layoutSettings.alignment === "right") {
+    marginStyle = "margin-left: auto; margin-right: 0;";
+  }
 
   return `<!DOCTYPE html>
 <html lang="ko">
@@ -16,9 +27,9 @@ export function generateEmailHTML(blocks: Block[]): string {
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
     <tr>
       <td style="padding: 20px;">
-        <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+        <table role="presentation" style="max-width: ${layoutSettings.maxWidth}px; ${marginStyle} background-color: #ffffff; border-radius: 8px; overflow: hidden;">
           <tr>
-            <td style="padding: 32px;">
+            <td style="padding: ${layoutSettings.padding}px;">
 ${blocksHTML}
             </td>
           </tr>

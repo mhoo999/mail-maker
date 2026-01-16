@@ -7,11 +7,12 @@ import { Block, BlockType } from "@/types/block";
 import { generateId } from "@/lib/utils";
 import { SortableBlock } from "./SortableBlock";
 import { EmailPreview } from "./EmailPreview";
-import { Plus, Eye, Code, Copy, Check, FileText, Save, Trash, Home, Upload } from "lucide-react";
+import { Plus, Eye, Code, Copy, Check, FileText, Save, Trash, Home, Upload, Settings } from "lucide-react";
 import { generateEmailHTML } from "@/lib/html-generator";
 import { parseEmailHTML, isMailMakerHTML } from "@/lib/html-parser";
 import { TEMPLATES, createBlocksFromTemplate } from "@/lib/templates";
 import { getSavedTemplates, saveTemplate, deleteTemplate as deleteStoredTemplate, SavedTemplate } from "@/lib/storage";
+import { EmailLayoutSettings, DEFAULT_LAYOUT_SETTINGS } from "@/types/layout";
 
 const BLOCK_TYPES: { type: BlockType; label: string }[] = [
   { type: "header", label: "헤더" },
@@ -40,6 +41,8 @@ export function MailBuilder() {
   const [templateDescription, setTemplateDescription] = useState("");
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [importHTML, setImportHTML] = useState("");
+  const [layoutSettings, setLayoutSettings] = useState<EmailLayoutSettings>(DEFAULT_LAYOUT_SETTINGS);
+  const [showLayoutSettings, setShowLayoutSettings] = useState(false);
 
   useEffect(() => {
     setSavedTemplates(getSavedTemplates());
@@ -106,7 +109,7 @@ export function MailBuilder() {
   };
 
   const copyHtmlToClipboard = async () => {
-    const html = generateEmailHTML(blocks);
+    const html = generateEmailHTML(blocks, layoutSettings);
     try {
       await navigator.clipboard.writeText(html);
       setCopied(true);
@@ -396,6 +399,14 @@ export function MailBuilder() {
           </div>
           <div className="flex gap-2">
             <button
+              onClick={() => setShowLayoutSettings(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-toss-gray-100 hover:bg-toss-gray-200 text-toss-gray-700 rounded-lg transition-colors text-sm font-medium"
+              title="레이아웃 설정"
+            >
+              <Settings className="w-4 h-4" />
+              레이아웃
+            </button>
+            <button
               onClick={() => setShowSaveDialog(true)}
               className="flex items-center gap-2 px-4 py-2 bg-toss-gray-100 hover:bg-toss-gray-200 text-toss-gray-700 rounded-lg transition-colors text-sm font-medium disabled:opacity-50"
               disabled={blocks.length === 0}
@@ -423,11 +434,11 @@ export function MailBuilder() {
 
         <div className="p-6">
           {showPreview ? (
-            <EmailPreview blocks={blocks} />
+            <EmailPreview blocks={blocks} layoutSettings={layoutSettings} />
           ) : (
             <div className="bg-toss-gray-900 text-toss-gray-100 p-6 rounded-lg font-mono text-sm overflow-auto max-h-[calc(100vh-120px)]">
               <pre className="whitespace-pre-wrap break-words">
-                {blocks.length > 0 ? generateEmailHTML(blocks) : "블록을 추가하면 HTML 코드가 표시됩니다"}
+                {blocks.length > 0 ? generateEmailHTML(blocks, layoutSettings) : "블록을 추가하면 HTML 코드가 표시됩니다"}
               </pre>
             </div>
           )}
@@ -529,6 +540,95 @@ export function MailBuilder() {
                 className="px-4 py-2 bg-black hover:bg-gray-800 text-white transition-colors border border-black"
               >
                 가져오기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 레이아웃 설정 다이얼로그 */}
+      {showLayoutSettings && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-toss-gray-900 mb-4">레이아웃 설정</h3>
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                  최대 너비 (px)
+                </label>
+                <input
+                  type="number"
+                  value={layoutSettings.maxWidth}
+                  onChange={(e) =>
+                    setLayoutSettings({
+                      ...layoutSettings,
+                      maxWidth: parseInt(e.target.value) || 600,
+                    })
+                  }
+                  min="400"
+                  max="1200"
+                  className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                />
+                <p className="text-xs text-toss-gray-500 mt-1">400px ~ 1200px 사이의 값을 입력하세요</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                  정렬 방식
+                </label>
+                <div className="flex gap-2">
+                  {(["left", "center", "right"] as const).map((align) => (
+                    <button
+                      key={align}
+                      onClick={() =>
+                        setLayoutSettings({
+                          ...layoutSettings,
+                          alignment: align,
+                        })
+                      }
+                      className={`flex-1 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
+                        layoutSettings.alignment === align
+                          ? "bg-black text-white"
+                          : "bg-toss-gray-100 text-toss-gray-700 hover:bg-toss-gray-200"
+                      }`}
+                    >
+                      {align === "left" ? "왼쪽" : align === "center" ? "가운데" : "오른쪽"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-toss-gray-700 mb-2">
+                  내부 패딩 (px)
+                </label>
+                <input
+                  type="number"
+                  value={layoutSettings.padding}
+                  onChange={(e) =>
+                    setLayoutSettings({
+                      ...layoutSettings,
+                      padding: parseInt(e.target.value) || 32,
+                    })
+                  }
+                  min="0"
+                  max="100"
+                  className="w-full px-3 py-2 border border-toss-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-toss-blue"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  setLayoutSettings(DEFAULT_LAYOUT_SETTINGS);
+                }}
+                className="px-4 py-2 text-toss-gray-700 hover:bg-toss-gray-100 rounded-lg transition-colors text-sm"
+              >
+                기본값으로
+              </button>
+              <button
+                onClick={() => setShowLayoutSettings(false)}
+                className="px-4 py-2 bg-black hover:bg-gray-800 text-white transition-colors border border-black"
+              >
+                적용
               </button>
             </div>
           </div>
