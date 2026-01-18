@@ -22,6 +22,7 @@ export function generateEmailHTML(blocks: Block[], layoutSettings: EmailLayoutSe
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Email</title>
+  <link rel="stylesheet" href="https://hoons-service-footer.vercel.app/footer.css">
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
   <table role="presentation" style="width: 100%; border-collapse: collapse;">
@@ -37,6 +38,8 @@ ${blocksHTML}
       </td>
     </tr>
   </table>
+  <div id="hoons-footer"></div>
+  <script src="https://hoons-service-footer.vercel.app/footer.js"></script>
 </body>
 </html>`;
 }
@@ -183,25 +186,8 @@ ${infoTableHTML}
                 </table>\n${wrapperEnd}`;
 
     case "footer":
-      let footerHTML = `                <div style="margin-top: 48px; padding: 24px; background-color: #f9fafb; text-align: center; font-size: 12px; color: #6b7684; line-height: 1.6; border-radius: 4px;">\n`;
-      if (block.companyName) {
-        footerHTML += `                  <div style="font-weight: 600; margin-bottom: 8px;">
-                    ${escapeHtml(block.companyName)}
-                  </div>\n`;
-      }
-      if (block.address) {
-        const addressHtml = convertTipTapToEmailHTML(block.address);
-        footerHTML += `                  <div style="margin-bottom: 8px;">
-                    ${addressHtml}
-                  </div>\n`;
-      }
-      if (block.copyright) {
-        footerHTML += `                  <div>
-                    ${escapeHtml(block.copyright)}
-                  </div>\n`;
-      }
-      footerHTML += `                </div>\n`;
-      return wrapperStart + footerHTML + wrapperEnd;
+      // 동적 푸터 로딩 방식으로 변경되어 footer 블록은 무시됨
+      return "";
 
     default:
       return "";
